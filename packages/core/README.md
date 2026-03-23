@@ -142,40 +142,48 @@ import { Icon } from 'astro-icon/components';
 
 ### Retrieving SVG Markup in Frontmatter
 
-`Icon.svg(name)` returns the raw SVG markup string for an icon. This is useful when you need the SVG outside of a component context — for example, to pass it as a CSS variable via Astro's `define:vars`.
+`Icon.url(name)` returns a CSS `url("data:image/svg+xml,…")` data-URL for an icon, ready to pass as a CSS variable via Astro's `define:vars`:
 
 ```astro
 ---
 import { Icon } from "astro-icon/components";
 
-// Get the raw SVG string for an icon
-const arrowSVG = Icon.svg("mdi:arrow-right");
-
-// Encode it for use as a CSS mask-image or background-image
-const arrowMask = `url("data:image/svg+xml,${encodeURIComponent(arrowSVG)}")`;
+// Returns url("data:image/svg+xml,…") — use directly in CSS
+const arrowUrl = Icon.url("mdi:arrow-right");
 ---
 
 <a href="https://google.com" class="external-link">google.com</a>
 
-<style define:vars={{ arrowMask }}>
+<style define:vars={{ arrowUrl }}>
   .external-link::after {
     content: "";
     display: inline-block;
     width: 1em;
     height: 1em;
-    mask-image: var(--arrowMask);
+    mask-image: var(--arrowUrl);
     background-color: currentColor;
   }
 </style>
 ```
 
-The `getIconSVG` function is also available as a named export if you prefer:
+`Icon.svg(name)` returns the raw SVG markup string if you need to encode it yourself or use it in other ways:
 
 ```astro
 ---
-import { getIconSVG } from "astro-icon/components";
+import { Icon } from "astro-icon/components";
+
+const arrowSVG = Icon.svg("mdi:arrow-right");
+---
+```
+
+Both helpers are also available as standalone named exports:
+
+```astro
+---
+import { getIconSVG, getIconURL } from "astro-icon/components";
 
 const svg = getIconSVG("mdi:arrow-right");
+const url = getIconURL("mdi:arrow-right");
 ---
 ```
 
