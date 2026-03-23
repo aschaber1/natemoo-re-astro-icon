@@ -140,6 +140,53 @@ import { Icon } from 'astro-icon/components';
 <Icon name="annotation" class="text-red-500" /> <!-- will be red-500 -->
 ```
 
+### Retrieving SVG Markup in Frontmatter
+
+`Icon.url(name)` returns a CSS `url("data:image/svg+xml,…")` data-URL for an icon, ready to pass as a CSS variable via Astro's `define:vars`:
+
+```astro
+---
+import { Icon } from "astro-icon/components";
+
+// Returns url("data:image/svg+xml,…") — use directly in CSS
+const arrowUrl = Icon.url("mdi:arrow-right");
+---
+
+<a href="https://google.com" class="external-link">google.com</a>
+
+<style define:vars={{ arrowUrl }}>
+  .external-link::after {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    mask-image: var(--arrowUrl);
+    background-color: currentColor;
+  }
+</style>
+```
+
+`Icon.svg(name)` returns the raw SVG markup string if you need to encode it yourself or use it in other ways:
+
+```astro
+---
+import { Icon } from "astro-icon/components";
+
+const arrowSVG = Icon.svg("mdi:arrow-right");
+---
+```
+
+Both helpers are also available as standalone named exports:
+
+```astro
+---
+import { getIconSVG, getIconURL } from "astro-icon/components";
+
+const svg = getIconSVG("mdi:arrow-right");
+const url = getIconURL("mdi:arrow-right");
+---
+```
+
 ### Using with Frameworks
 
 Astro Icon can be used with other frameworks utilizing the [`slot` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot). You can read more about how to use Slots in Astro here. [Passing Children to Framework Components](https://docs.astro.build/en/core-concepts/framework-components/#passing-children-to-framework-components)
