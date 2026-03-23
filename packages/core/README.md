@@ -140,6 +140,45 @@ import { Icon } from 'astro-icon/components';
 <Icon name="annotation" class="text-red-500" /> <!-- will be red-500 -->
 ```
 
+### Retrieving SVG Markup in Frontmatter
+
+`Icon.svg(name)` returns the raw SVG markup string for an icon. This is useful when you need the SVG outside of a component context — for example, to pass it as a CSS variable via Astro's `define:vars`.
+
+```astro
+---
+import { Icon } from "astro-icon/components";
+
+// Get the raw SVG string for an icon
+const arrowSVG = Icon.svg("mdi:arrow-right");
+
+// Encode it for use as a CSS mask-image or background-image
+const arrowMask = `url("data:image/svg+xml,${encodeURIComponent(arrowSVG)}")`;
+---
+
+<a href="https://google.com" class="external-link">google.com</a>
+
+<style define:vars={{ arrowMask }}>
+  .external-link::after {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    mask-image: var(--arrowMask);
+    background-color: currentColor;
+  }
+</style>
+```
+
+The `getIconSVG` function is also available as a named export if you prefer:
+
+```astro
+---
+import { getIconSVG } from "astro-icon/components";
+
+const svg = getIconSVG("mdi:arrow-right");
+---
+```
+
 ### Using with Frameworks
 
 Astro Icon can be used with other frameworks utilizing the [`slot` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot). You can read more about how to use Slots in Astro here. [Passing Children to Framework Components](https://docs.astro.build/en/core-concepts/framework-components/#passing-children-to-framework-components)
